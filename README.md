@@ -30,13 +30,13 @@ while avoiding the emergence of deconvolution artifacts.
 
 We provide 2 implementations of `SPITFIRe`. One is the original primal-dual implementation in c++ and works for 2D, 3D and 4D images. The second is a pyTorch gradient descent based implementation for 2D images. The primal-dual implementation is wrapped to python and available as a napari plugin called [napari-sdeconv](https://www.napari-hub.org/plugins/napari-sdeconv)
 
-## SPITFIRe primal-dual
+## SPITFIRe C++
 
-The primal-dual implementation of `SPITFIRe` is available in the [SimgLib](https://github.com/sylvainprigent/simglib) repository as a stand alone c++ command line interface. It is implemented for CPU and for GPU (cuda). This version is wrapped into [sdeconv](https://github.com/sylvainprigent/sdeconv) a python library for image deconvolution. 
+A c++ implementation of `SPITFIRe` is available in the [SimgLib](https://github.com/sylvainprigent/simglib) repository as a stand alone c++ command line interface. It is implemented for CPU and for GPU (cuda). 
 
-## SPITFIRe pyTorch
+## SPITFIRe python
 
-The `SPITFIRe` pyTorch implementation is meant to provide an easy to use and modify full python implementation of the `SPITFIRe` regularizer. It is available in the [svariational](https://github.com/sylvainprigent/svariational) package.
+A `SPITFIRe` python implementation using the pyTorch library is meant to provide an easy to use and modify full python implementation of the `SPITFIRe` regularizer. It is available in the [sdeconv](https://github.com/sylvainprigent/sdeconv) package.
 
 # System Requirements
 
@@ -70,7 +70,6 @@ The easiest method to install the napari plugin is using Conda.
 ```shell
 conda create -y -n napari-env -c conda-forge python=3.9 pip
 conda activate napari-env
-conda install fftw
 python -m pip install "napari[all]"
 python -m pip install napari-sdeconv
 ```
@@ -83,32 +82,31 @@ napari
 ```
 and `SPITFIRe` is in the plugin menu
 
-## Using the python wrapper
+## Using the python version
 
 The python primal-dual version can be installed using Conda
 
 ```shell
 conda create -y -n spitfire -c conda-forge python=3.9 pip
 conda activate spitfire
-conda install fftw
 python -m pip install sdeconv
 ```
 
 The `SPITFIRe` python class can then be used as follow:
 
 ```python
-from sdeconv import data
-from sdeconv.deconv import SpitfireDeconv, PSFGaussian
+from sdeconv.data import celegans
+from sdeconv.deconv import Spitfire, PSFGaussian
 
 # load the blurry image
-image = data.celegans()
+image = celegans()
 
 # create a PSF
-psf_gauss = PSFGaussian((1.5, 1.5), image.shape)
-psf_gauss.run()
+psf_generator = SPSFGaussian((1.5, 1.5), (13, 13))
+psf = psf_generator()
 
-deconv = SpitfireDeconv(regularization=pow(2, -12), weighting=0.6, model='HV', niter=200)
-deconv_image = deconv.run(image, psf_gauss.psf_)
+filter_ = Spitfire(psf, weight=0.6, reg=0.995, gradient_step=0.01, precision=1e-7, pad=13)
+deconv_image = filter_(image)
 ```
 
 ## Using the c++ CLI

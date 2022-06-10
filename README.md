@@ -28,7 +28,7 @@ while avoiding the emergence of deconvolution artifacts.
 
 # Repo Contents
 
-We provide 2 implementations of `SPITFIRe`. One is the original primal-dual implementation in c++ and works for 2D, 3D and 4D images. The second is a pyTorch gradient descent based implementation for 2D images. The primal-dual implementation is wrapped to python and available as a napari plugin called [napari-sdeconv](https://www.napari-hub.org/plugins/napari-sdeconv)
+We provide 2 implementations of `SPITFIRe`. One is the original c++ implementation and works for 2D, 3D and 4D images. The second is a python pyTorch based implementation. 
 
 ## SPITFIRe C++
 

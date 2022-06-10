@@ -96,7 +96,7 @@ The `SPITFIRe` python class can then be used as follow:
 
 ```python
 from sdeconv.data import celegans
-from sdeconv.deconv import Spitfire, PSFGaussian
+from sdeconv.deconv import Spitfire, SPSFGaussian
 
 # load the blurry image
 image = celegans()
